@@ -47,7 +47,7 @@
     const question = query.get("question");
     const configUrl = "checkpoints.json";
 
-    let currentCheckpoint = null;
+    // let currentCheckpoint = null;
 
     function getDistanceFromLatLon(lat1, lon1, lat2, lon2) {
         const R = 6371e3;
@@ -63,7 +63,7 @@
     }
 
     async function loadCheckpoint() {
-        fetch('checkpoints.json')
+        fetch(configUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
@@ -78,7 +78,7 @@
                     document.getElementById("status").innerText = "Invalid game or question.";
                     return;
                 }
-                checkLocation();
+                checkLocation(currentCheckpoint);
             })
             .catch(error => {
                 console.error('Error loading JSON:', error);
@@ -95,7 +95,7 @@
         // checkLocation();
     }
 
-    function checkLocation() {
+    function checkLocation(currentCheckpoint) {
         document.getElementById("status").innerText = "Getting your location...";
         console.log("Staring geo fencing...")
         console.log(currentCheckpoint)
