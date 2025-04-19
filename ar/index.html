@@ -70,12 +70,14 @@
             document.getElementById("status").innerText = "Invalid game or question.";
             return;
         }
+        console.log(res,data)
         checkLocation();
     }
 
     function checkLocation() {
         document.getElementById("status").innerText = "Getting your location...";
         console.log("Staring geo fencing...")
+        console.log(currentCheckpoint)
         navigator.geolocation.getCurrentPosition(
             (pos) => {
                 console.log(pos);
