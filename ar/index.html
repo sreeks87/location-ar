@@ -100,9 +100,10 @@
                 const rounded = Math.round(dist);
                 if (dist <= currentCheckpoint.radius) {
                     document.getElementById("status").innerText = `Success! You're within ${rounded} meters. Redirecting...`;
-                    setTimeout(() => {
-                        window.location.href = currentCheckpoint.next;
-                    }, 2000);
+                    showARScene(currentCheckpoint)
+                    // setTimeout(() => {
+                    //     window.location.href = currentCheckpoint.next;
+                    // }, 2000);
                 } else {
                     document.getElementById("status").innerText = `You're ${rounded} meters away. Try moving closer and click "Check Again".`;
                 }
@@ -116,8 +117,55 @@
             }
         );
     }
+    function showARScene(currentCheckpoint) {
+        console.log("current checkpoint",currentCheckpoint)
+        const { lat, lng } = currentCheckpoint;
 
-    function skipLocation() {
+        document.body.innerHTML = `
+
+          <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>AR Scene</title>
+            <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+            <script src="https://unpkg.com/aframe-ar@1.8.3/dist/aframe-ar.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js"></script>
+            <style>
+                body, html { margin: 0; padding: 0; overflow: hidden; }
+            </style>
+            </head>
+            <body>
+            <a-scene
+                    embedded
+                    arjs="sourceType: webcam; gpsMinAccuracy: 100;"
+                    vr-mode-ui="enabled: false"
+                    renderer="logarithmicDepthBuffer: true;"
+            >
+                <a-camera gps-camera rotation-reader></a-camera>
+
+                <a-box
+                        color="orange"
+                        depth="1"
+                        height="1"
+                        width="1"
+                        gps-entity-place="latitude: ${lat}; longitude: ${lng};"
+                        animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
+                ></a-box>
+
+                <a-text
+                        value="You've found the Minecraft relic!"
+                        position="0 2 -3"
+                        align="center"
+                        scale="5 5 5"
+                ></a-text>
+            </a-scene>
+            </body>
+            </html>
+
+        `;
+}
+
+
+function skipLocation() {
         if (currentCheckpoint?.next) {
             window.location.href = currentCheckpoint.next;
         } else {
