@@ -1,0 +1,22 @@
+{
+  "minecraft-park-hunt": {
+    "q1": {
+      "lat": 52.440380,
+      "lng": 13.373460,
+      "radius": 60,
+      "next": "https://your-typeform-link.com/q2"
+    },
+    "q2": {
+      "lat": 52.441200,
+      "lng": 13.375600,
+      "radius": 60,
+      "next": "https://your-typeform-link.com/q3"
+    },
+    "q3": {
+      "lat": 52.442000,
+      "lng": 13.376800,
+      "radius": 60,
+      "next": "https://your-typeform-link.com/q4"
+    }
+  }
+}
