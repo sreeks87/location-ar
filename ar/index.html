@@ -120,61 +120,60 @@
     function showARScene(currentCheckpoint) {
         const { lat, lng } = currentCheckpoint;
 
-        document.body.innerHTML = ''; // Clear screen
+        document.body.innerHTML = ''; // Clear current UI
 
-        // Helper to load scripts in sequence
+        // Helper to load scripts
         function loadScript(src) {
             return new Promise((resolve, reject) => {
                 const script = document.createElement('script');
                 script.src = src;
                 script.onload = resolve;
-                script.onerror = reject;
+                script.onerror = () => reject(`Failed to load ${src}`);
                 document.head.appendChild(script);
             });
         }
 
-        // Load all AR-related scripts in order
-        Promise.resolve()
-            .then(() => loadScript("https://aframe.io/releases/1.4.2/aframe.min.js"))
-            .then(() => loadScript("https://unpkg.com/aframe-ar@1.8.3/dist/aframe-ar.min.js"))
-            .then(() => loadScript("https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js"))
-            .then(() => {
-                const style = document.createElement("style");
-                style.innerHTML = `body, html { margin: 0; padding: 0; overflow: hidden; height: 100%; }`;
-                document.head.appendChild(style);
+        const loadScripts = async () => {
+            try {
+                await loadScript("https://aframe.io/releases/1.4.2/aframe.min.js");
+                await loadScript("https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js");
+                await loadScript("https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js");
 
+                // All scripts loaded, inject AR scene
                 document.body.innerHTML = `
         <a-scene
+          vr-mode-ui="enabled: false"
           embedded
           arjs="sourceType: webcam; gpsMinAccuracy: 100;"
-          vr-mode-ui="enabled: false"
           renderer="logarithmicDepthBuffer: true;"
         >
           <a-camera gps-camera rotation-reader></a-camera>
 
           <a-box
-            color="orange"
-            depth="1"
-            height="1"
-            width="1"
+            position="0 1 0"
+            material="color: red"
             gps-entity-place="latitude: ${lat}; longitude: ${lng};"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
           ></a-box>
 
           <a-text
-            value="You've found the Minecraft relic!"
-            position="0 2 -3"
-            align="center"
-            scale="5 5 5"
+            value="You've found the Minecraft cube!"
+            look-at="[gps-camera]"
+            scale="10 10 10"
+            gps-entity-place="latitude: ${lat}; longitude: ${lng};"
+            position="0 3 0"
           ></a-text>
         </a-scene>
       `;
-            })
-            .catch((err) => {
-                console.error("Failed to load AR scripts:", err);
-                document.body.innerHTML = "<p style='color: red;'>Failed to load AR scene.</p>";
-            });
+            } catch (err) {
+                console.error(err);
+                document.body.innerHTML = `<p style="color:red;">Error loading AR: ${err}</p>`;
+            }
+        };
+
+        loadScripts();
     }
+
 
 
 
