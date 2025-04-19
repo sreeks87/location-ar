@@ -63,6 +63,21 @@
     }
 
     async function loadCheckpoint() {
+        fetch('checkpoints.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Checkpoints loaded:', data);
+                // Continue your game logic...
+            })
+            .catch(error => {
+                console.error('Error loading JSON:', error);
+            });
+
         const res = await fetch(configUrl);
         const data = await res.json();
         currentCheckpoint = data?.[game]?.[question];
