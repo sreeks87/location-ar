@@ -73,20 +73,27 @@
             .then(data => {
                 console.log('Checkpoints loaded:', data);
                 // Continue your game logic...
+                currentCheckpoint = data?.[game]?.[question];
+                if (!currentCheckpoint) {
+                    document.getElementById("status").innerText = "Invalid game or question.";
+                    return;
+                }
+                console.log(res,data)
+                checkLocation();
             })
             .catch(error => {
                 console.error('Error loading JSON:', error);
             });
 
-        const res = await fetch(configUrl);
-        const data = await res.json();
-        currentCheckpoint = data?.[game]?.[question];
-        if (!currentCheckpoint) {
-            document.getElementById("status").innerText = "Invalid game or question.";
-            return;
-        }
-        console.log(res,data)
-        checkLocation();
+        // const res = await fetch(configUrl);
+        // const data = await res.json();
+        // currentCheckpoint = data?.[game]?.[question];
+        // if (!currentCheckpoint) {
+        //     document.getElementById("status").innerText = "Invalid game or question.";
+        //     return;
+        // }
+        // console.log(res,data)
+        // checkLocation();
     }
 
     function checkLocation() {
