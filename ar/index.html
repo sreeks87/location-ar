@@ -121,53 +121,22 @@
         const { lat, lng } = currentCheckpoint;
 
         document.body.innerHTML = ''; // Clear current UI
-
-        // Load required scripts
-        const loadScript = (src) => new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = resolve;
-            script.onerror = () => reject(`Failed to load ${src}`);
-            document.head.appendChild(script);
-        });
-
-        const loadScripts = async () => {
-            try {
-                await loadScript("https://aframe.io/releases/1.4.2/aframe.min.js");
-                await loadScript("https://raw.githack.com/jeromeetienne/AR.js/3.3.2/aframe/build/aframe-ar-nft.js");
-
-                document.body.innerHTML = `
+        document.body.innerHTML = `
+        <body>
         <a-scene
           vr-mode-ui="enabled: false"
-          embedded
-          arjs="sourceType: webcam; gpsMinAccuracy: 100;"
-          renderer="logarithmicDepthBuffer: true;"
+          arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
         >
-          <a-camera gps-camera rotation-reader></a-camera>
-
-          <a-box
-            position="0 1 0"
-            material="color: red"
-            gps-entity-place="latitude: ${lat}; longitude: ${lng};"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
-          ></a-box>
-
           <a-text
-            value="Minecraft block discovered!"
+            value="This content will always face you."
             look-at="[gps-camera]"
-            scale="10 10 10"
-            gps-entity-place="latitude: ${lat}; longitude: ${lng};"
-            position="0 3 0"
+            scale="120 120 120"
+            gps-entity-place="latitude: <add-your-latitude>; longitude: <add-your-longitude>;"
           ></a-text>
+          <a-camera gps-camera rotation-reader> </a-camera>
         </a-scene>
-      `;
-            } catch (err) {
-                console.error(err);
-                document.body.innerHTML = `<p style="color:red;">Error loading AR: ${err}</p>`;
-            }
-        };
-
-        loadScripts();
+      </body>
+        `
     }
 
 
