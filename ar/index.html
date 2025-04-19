@@ -122,24 +122,20 @@
 
         document.body.innerHTML = ''; // Clear current UI
 
-        // Helper to load scripts
-        function loadScript(src) {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = resolve;
-                script.onerror = () => reject(`Failed to load ${src}`);
-                document.head.appendChild(script);
-            });
-        }
+        // Load required scripts
+        const loadScript = (src) => new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = () => reject(`Failed to load ${src}`);
+            document.head.appendChild(script);
+        });
 
         const loadScripts = async () => {
             try {
                 await loadScript("https://aframe.io/releases/1.4.2/aframe.min.js");
-                await loadScript("https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js");
-                await loadScript("https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js");
+                await loadScript("https://raw.githack.com/jeromeetienne/AR.js/3.3.2/aframe/build/aframe-ar-nft.js");
 
-                // All scripts loaded, inject AR scene
                 document.body.innerHTML = `
         <a-scene
           vr-mode-ui="enabled: false"
@@ -157,7 +153,7 @@
           ></a-box>
 
           <a-text
-            value="You've found the Minecraft cube!"
+            value="Minecraft block discovered!"
             look-at="[gps-camera]"
             scale="10 10 10"
             gps-entity-place="latitude: ${lat}; longitude: ${lng};"
@@ -173,6 +169,7 @@
 
         loadScripts();
     }
+
 
 
 
