@@ -75,10 +75,13 @@
 
     function checkLocation() {
         document.getElementById("status").innerText = "Getting your location...";
+        console.log("Staring geo fencing...")
         navigator.geolocation.getCurrentPosition(
             (pos) => {
+                console.log(pos);
                 const lat = pos.coords.latitude;
                 const lng = pos.coords.longitude;
+                console.log(`Latitude: ${lat}, Longitude: ${lng}`);
                 const dist = getDistanceFromLatLon(lat, lng, currentCheckpoint.lat, currentCheckpoint.lng);
                 const rounded = Math.round(dist);
                 if (dist <= currentCheckpoint.radius) {
