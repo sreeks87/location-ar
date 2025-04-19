@@ -118,54 +118,62 @@
         );
     }
     function showARScene(currentCheckpoint) {
-        console.log("current checkpoint",currentCheckpoint)
         const { lat, lng } = currentCheckpoint;
 
-        document.body.innerHTML = `
+        // Clear body
+        document.body.innerHTML = "";
 
-          <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>AR Scene</title>
-            <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-            <script src="https://unpkg.com/aframe-ar@1.8.3/dist/aframe-ar.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js"></script>
-            <style>
-                body, html { margin: 0; padding: 0; overflow: hidden; }
-            </style>
-            </head>
-            <body>
-            <a-scene
-                    embedded
-                    arjs="sourceType: webcam; gpsMinAccuracy: 100;"
-                    vr-mode-ui="enabled: false"
-                    renderer="logarithmicDepthBuffer: true;"
-            >
-                <a-camera gps-camera rotation-reader></a-camera>
+        // Inject necessary <head> content manually
+        const aframeScript = document.createElement("script");
+        aframeScript.src = "https://aframe.io/releases/1.4.2/aframe.min.js";
+        document.head.appendChild(aframeScript);
 
-                <a-box
-                        color="orange"
-                        depth="1"
-                        height="1"
-                        width="1"
-                        gps-entity-place="latitude: ${lat}; longitude: ${lng};"
-                        animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
-                ></a-box>
+        const arScript = document.createElement("script");
+        arScript.src = "https://unpkg.com/aframe-ar@1.8.3/dist/aframe-ar.min.js";
+        document.head.appendChild(arScript);
 
-                <a-text
-                        value="You've found the Minecraft relic!"
-                        position="0 2 -3"
-                        align="center"
-                        scale="5 5 5"
-                ></a-text>
-            </a-scene>
-            </body>
-            </html>
+        const gpsScript = document.createElement("script");
+        gpsScript.src = "https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js";
+        document.head.appendChild(gpsScript);
 
-        `;
-}
+        const style = document.createElement("style");
+        style.innerHTML = `body, html { margin: 0; padding: 0; overflow: hidden; }`;
+        document.head.appendChild(style);
+
+        // Wait a moment for scripts to load before injecting the scene
+        setTimeout(() => {
+            document.body.innerHTML = `
+      <a-scene
+        embedded
+        arjs="sourceType: webcam; gpsMinAccuracy: 100;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true;"
+      >
+        <a-camera gps-camera rotation-reader></a-camera>
+
+        <a-box
+          color="orange"
+          depth="1"
+          height="1"
+          width="1"
+          gps-entity-place="latitude: ${lat}; longitude: ${lng};"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
+        ></a-box>
+
+        <a-text
+          value="You've found the Minecraft relic!"
+          position="0 2 -3"
+          align="center"
+          scale="5 5 5"
+        ></a-text>
+      </a-scene>
+    `;
+        }, 500); // Delay to allow scripts to load
+    }
 
 
-function skipLocation() {
+
+    function skipLocation() {
         if (currentCheckpoint?.next) {
             window.location.href = currentCheckpoint.next;
         } else {
