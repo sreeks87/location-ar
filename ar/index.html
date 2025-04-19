@@ -47,7 +47,7 @@
     const question = query.get("question");
     const configUrl = "checkpoints.json";
 
-    // let currentCheckpoint = null;
+    let currentCheckpoint = null;
 
     function getDistanceFromLatLon(lat1, lon1, lat2, lon2) {
         const R = 6371e3;
@@ -79,24 +79,14 @@
                     document.getElementById("status").innerText = "Invalid game or question.";
                     return;
                 }
-                checkLocation(currentCheckpoint);
+                checkLocation();
             })
             .catch(error => {
                 console.error('Error loading JSON:', error);
             });
-
-        // const res = await fetch(configUrl);
-        // const data = await res.json();
-        // currentCheckpoint = data?.[game]?.[question];
-        // if (!currentCheckpoint) {
-        //     document.getElementById("status").innerText = "Invalid game or question.";
-        //     return;
-        // }
-        // console.log(res,data)
-        // checkLocation();
     }
 
-    function checkLocation(currentCheckpoint) {
+    function checkLocation() {
         document.getElementById("status").innerText = "Getting your location...";
         console.log("Staring geo fencing...")
         console.log(currentCheckpoint)
