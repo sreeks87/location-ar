@@ -120,56 +120,62 @@
     function showARScene(currentCheckpoint) {
         const { lat, lng } = currentCheckpoint;
 
-        // Clear body
-        document.body.innerHTML = "";
+        document.body.innerHTML = ''; // Clear screen
 
-        // Inject necessary <head> content manually
-        const aframeScript = document.createElement("script");
-        aframeScript.src = "https://aframe.io/releases/1.4.2/aframe.min.js";
-        document.head.appendChild(aframeScript);
+        // Helper to load scripts in sequence
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
 
-        const arScript = document.createElement("script");
-        arScript.src = "https://unpkg.com/aframe-ar@1.8.3/dist/aframe-ar.min.js";
-        document.head.appendChild(arScript);
+        // Load all AR-related scripts in order
+        Promise.resolve()
+            .then(() => loadScript("https://aframe.io/releases/1.4.2/aframe.min.js"))
+            .then(() => loadScript("https://unpkg.com/aframe-ar@1.8.3/dist/aframe-ar.min.js"))
+            .then(() => loadScript("https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js"))
+            .then(() => {
+                const style = document.createElement("style");
+                style.innerHTML = `body, html { margin: 0; padding: 0; overflow: hidden; height: 100%; }`;
+                document.head.appendChild(style);
 
-        const gpsScript = document.createElement("script");
-        gpsScript.src = "https://cdn.jsdelivr.net/npm/aframe-gps-camera-component@1.7.2/dist/aframe-gps-camera-component.min.js";
-        document.head.appendChild(gpsScript);
+                document.body.innerHTML = `
+        <a-scene
+          embedded
+          arjs="sourceType: webcam; gpsMinAccuracy: 100;"
+          vr-mode-ui="enabled: false"
+          renderer="logarithmicDepthBuffer: true;"
+        >
+          <a-camera gps-camera rotation-reader></a-camera>
 
-        const style = document.createElement("style");
-        style.innerHTML = `body, html { margin: 0; padding: 0; overflow: hidden; }`;
-        document.head.appendChild(style);
+          <a-box
+            color="orange"
+            depth="1"
+            height="1"
+            width="1"
+            gps-entity-place="latitude: ${lat}; longitude: ${lng};"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
+          ></a-box>
 
-        // Wait a moment for scripts to load before injecting the scene
-        setTimeout(() => {
-            document.body.innerHTML = `
-      <a-scene
-        embedded
-        arjs="sourceType: webcam; gpsMinAccuracy: 100;"
-        vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true;"
-      >
-        <a-camera gps-camera rotation-reader></a-camera>
-
-        <a-box
-          color="orange"
-          depth="1"
-          height="1"
-          width="1"
-          gps-entity-place="latitude: ${lat}; longitude: ${lng};"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
-        ></a-box>
-
-        <a-text
-          value="You've found the Minecraft relic!"
-          position="0 2 -3"
-          align="center"
-          scale="5 5 5"
-        ></a-text>
-      </a-scene>
-    `;
-        }, 500); // Delay to allow scripts to load
+          <a-text
+            value="You've found the Minecraft relic!"
+            position="0 2 -3"
+            align="center"
+            scale="5 5 5"
+          ></a-text>
+        </a-scene>
+      `;
+            })
+            .catch((err) => {
+                console.error("Failed to load AR scripts:", err);
+                document.body.innerHTML = "<p style='color: red;'>Failed to load AR scene.</p>";
+            });
     }
+
 
 
 
