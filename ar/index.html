@@ -74,6 +74,7 @@
                 console.log('Checkpoints loaded:', data);
                 // Continue your game logic...
                 currentCheckpoint = data?.[game]?.[question];
+                console.log('Checkpoints current:',currentCheckpoint)
                 if (!currentCheckpoint) {
                     document.getElementById("status").innerText = "Invalid game or question.";
                     return;
