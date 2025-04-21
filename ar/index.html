@@ -128,22 +128,13 @@
         document.body.innerHTML = ''; // Clear current UI
         document.body.innerHTML = `
         <body>
-        <a-scene
-          vr-mode-ui="enabled: false"
-          arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
-        >
-          <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" look-at="[gps-camera]" scale="120 120 120" gps-entity-place="latitude: ${lat}; longitude: ${lng};"></a-box>
-          <a-camera gps-camera rotation-reader> </a-camera>
+        <a-scene vr-mode-ui="enabled: false" arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
+            <a-box color="red" position="0 2 -5" rotation="0 45 45" scale="2 2 2" look-at="[gps-camera]" gps-entity-place="latitude: ${lat}; longitude: ${lng};"></a-box>
+            <a-camera gps-camera rotation-reader> </a-camera>
         </a-scene>
       </body>
         `
     }
-
-
-
-
-
-
     function skipLocation() {
         if (currentCheckpoint?.next) {
             window.location.href = currentCheckpoint.next;
